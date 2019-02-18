@@ -1,13 +1,14 @@
+from pygame import Surface
 from abc import ABC, abstractmethod
 
 
 class Button(ABC):
-    def __init__(self, x, y, size_x, size_y, surface, text, image=None, color="black"):
+    def __init__(self, surface, x, y, size_x, size_y, text, image=None, color="black"):
         self.x, self.y = x, y
         self.size_x = size_x
         self.size_y = size_y
         self.surface = surface
-        self.img = image
+        self.img = image if type(image) in [str, Surface] else None
         self.color = color
         self.text = text
 
