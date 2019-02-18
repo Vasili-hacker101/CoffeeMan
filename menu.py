@@ -14,13 +14,7 @@ class Button_menu(Button):
             screen.blit(text, (self.x, self.y))
 
         else:
-            if self.img is str:
-                image = pygame.image.load(self.img).convert()
-                self.surface.blit(image, image.get_rect())
-
-            elif self.img is pygame.Surface:
-                image = self.img
-                self.surface.blit(image, image.get_rect())
+            check_img(self.img)
 
         if self.is_active(pygame.mouse.get_pos()):
             draw.rect(self.surface, Color("yellow"), (self.x, self.y, self.size_x, self.size_y), 1)
@@ -30,7 +24,7 @@ class Button_menu(Button):
 
 
 class Menu:
-    def __init__(self, surface, width, height, s_x, s_y, size_b, step_b):
+    def __init__(self, surface, width, height, s_x, s_y, size_b, step_b, image=None):
         self.surface = surface
         self.width = width
         self.height = height
@@ -38,10 +32,16 @@ class Menu:
         self.s_x, self.s_y = s_x, s_y
         self.size_b = size_b
         self.step_b = step_b
+        self.img = image if type(image) in [str, pygame.Surface] else None
 
         self.is_active = True
 
     def draw(self):
+        if self.img is not None:
+            image = check_img(self.img)
+
+            self.surface.blit(image, image.get_rect())
+
         for btn in self.buttons:
             btn.draw()
 
@@ -55,13 +55,23 @@ class Menu:
             self.buttons.append(btn)
 
 
+def check_img(img):
+    if type(img) is str:
+        image = pygame.image.load(f".resource/menu/{img}").convert()
+
+    else:
+        image = img
+
+    return image
+
+
 if __name__ == '__main__':
     pygame.init()
 
     width, height = 1280, 720
     screen = pygame.display.set_mode((width, height))
 
-    menu = Menu(screen, 1280, 720, 0, 0, (100, 50), 10)
+    menu = Menu(screen, 1280, 720, 0, 0, (100, 50), 10, image="background.jpg")
 
     while True:
         screen.fill(Color("white"))
