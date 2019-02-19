@@ -34,7 +34,7 @@ class Menu:
     def get_pressed(self, mouse_pos):
         for btn in self.buttons:
             if btn.is_active(mouse_pos):
-                btn.pressed(btn.text.lower())
+                btn.pressed()
 
     def add_btn(self, btn):
         if type(btn) is Button_menu:
@@ -42,7 +42,6 @@ class Menu:
 
 
 if __name__ == '__main__':
-    game_status = "menu"
     pygame.init()
 
     width, height = 1280, 720
@@ -57,6 +56,9 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit(0)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    menu.get_pressed(pygame.mouse.get_pos())
 
         menu.draw()
         pygame.display.flip()

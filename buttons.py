@@ -1,7 +1,8 @@
 from pygame import draw, Color
 import pygame
 
-from functions import check_img
+
+from functions import *
 from abc import ABC, abstractmethod
 
 
@@ -45,6 +46,11 @@ class Button_menu(Button):
         if self.is_active(pygame.mouse.get_pos()):
             draw.rect(self.surface, Color("yellow"), (self.x, self.y, self.size_x, self.size_y), 1)
 
-    def pressed(self, nes_status="menu"):
-        global game_status
-        game_status = nes_status
+    def pressed(self):
+        data = get_data()
+
+        data["game_status"] = self.text.lower()
+
+        set_data(data)
+
+
