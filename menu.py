@@ -1,40 +1,21 @@
-from pygame import draw, Color
+from pygame import Color
 import pygame
 
-from button import Button
-
-
-class Button_menu(Button):
-    def draw(self):
-        if self.img is None:
-            draw.rect(self.surface, Color(self.color), (self.x, self.y, self.size_x, self.size_y))
-
-            font = pygame.font.Font(None, self.size_y)
-            text = font.render(self.text, 1, Color("White"))
-            screen.blit(text, (self.x, self.y))
-
-        else:
-            check_img(self.img)
-
-        if self.is_active(pygame.mouse.get_pos()):
-            draw.rect(self.surface, Color("yellow"), (self.x, self.y, self.size_x, self.size_y), 1)
-
-    def pressed(self):
-        pass
+from buttons import Button_menu
+from functions import check_img
 
 
 class Menu:
-    def __init__(self, surface, width, height, s_x, s_y, size_b, step_b, image=None):
+    def __init__(self, surface, width, height, s_x=0, s_y=0, text="Menu", image=None):
         self.surface = surface
         self.width = width
         self.height = height
-        self.buttons = []
-        self.s_x, self.s_y = s_x, s_y
-        self.size_b = size_b
-        self.step_b = step_b
+        self.buttons = [Button_menu(surface, 490, 200, 300, 100, "Play"),
+                        Button_menu(surface, 490, 350, 300, 100, "Settings"),
+                        Button_menu(surface, 490, 500, 300, 100, "Exit")]
+        self.x, self.y = s_x, s_y
+        self.text = text
         self.img = image if type(image) in [str, pygame.Surface] else None
-
-        self.is_active = True
 
     def draw(self):
         if self.img is not None:
@@ -42,36 +23,32 @@ class Menu:
 
             self.surface.blit(image, image.get_rect())
 
+        font = pygame.font.Font(None, 100)
+        size = font.size(self.text)
+        text = font.render(self.text, 1, Color("White"))
+        screen.blit(text, ((self.width - self.x - size[0]) // 2, self.y + 50))
+
         for btn in self.buttons:
             btn.draw()
 
-    def get_button(self, mouse_pos):
+    def get_pressed(self, mouse_pos):
         for btn in self.buttons:
             if btn.is_active(mouse_pos):
-                btn.pressed()
+                btn.pressed(btn.text.lower())
 
     def add_btn(self, btn):
-        if btn is Button_menu:
+        if type(btn) is Button_menu:
             self.buttons.append(btn)
 
 
-def check_img(img):
-    if type(img) is str:
-        image = pygame.image.load(f".resource/menu/{img}").convert()
-
-    else:
-        image = img
-
-    return image
-
-
 if __name__ == '__main__':
+    game_status = "menu"
     pygame.init()
 
     width, height = 1280, 720
     screen = pygame.display.set_mode((width, height))
 
-    menu = Menu(screen, 1280, 720, 0, 0, (100, 50), 10, image="background.jpg")
+    menu = Menu(screen, width, height, image="background.jpg")
 
     while True:
         screen.fill(Color("white"))
