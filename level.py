@@ -4,22 +4,21 @@ import pygame
 from functions import check_img
 
 
-class Level():
+class Level:
     def __init__(self, surface, start_and_size, cell_size, image=None):
         self.surface = surface
         self.rect = start_and_size  # (x, y, size_x, size_y)
         self.cell_size = cell_size
-        self.img = image if type(image) in [str, pygame.Surface] else None
+        x, y, size_x, size_y = start_and_size
+        self.img = check_img(image, (size_x, size_y))
         self.wall = []
 
     def draw(self, wall=False, sheet=False):
-        if self.img is not None:
-            image = check_img(self.img)
-
-            self.surface.blit(image, image.get_rect())
+        if self.img is None:
+            self.surface.fill(Color("black"))
 
         else:
-            self.surface.blit(Color("black"))
+            self.surface.blit(self.img, self.rect)
 
         if wall:
             for w in self.wall:
@@ -58,7 +57,7 @@ if __name__ == '__main__':
     width, height = 1280, 720
     screen = pygame.display.set_mode((width, height))
 
-    level = Level(screen, (0, 0, width, height), 40, image="background.jpg")
+    level = Level(screen, (0, 0, width, height), 40, image="resource/menu/background.jpg")
 
     while True:
         screen.fill(Color("white"))

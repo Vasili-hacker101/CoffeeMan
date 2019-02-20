@@ -10,18 +10,16 @@ class Menu:
         self.surface = surface
         self.width = width
         self.height = height
-        self.buttons = [Button_menu(surface, 490, 200, 300, 100, "Play"),
+        self.buttons = [Button_menu(surface, 490, 200, 300, 100, "Play", image="resource/menu/background.jpg"),
                         Button_menu(surface, 490, 350, 300, 100, "Settings"),
                         Button_menu(surface, 490, 500, 300, 100, "Exit")]
         self.x, self.y = s_x, s_y
         self.text = text
-        self.img = image if type(image) in [str, pygame.Surface] else None
+        self.img = check_img(image, (width - s_x, height - s_y))
 
     def draw(self):
         if self.img is not None:
-            image = check_img(self.img)
-
-            self.surface.blit(image, image.get_rect())
+            self.surface.blit(self.img, (self.x, self.y, self.width, self.height))
 
         font = pygame.font.Font(None, 100)
         size = font.size(self.text)
@@ -47,7 +45,7 @@ if __name__ == '__main__':
     width, height = 1280, 720
     screen = pygame.display.set_mode((width, height))
 
-    menu = Menu(screen, width, height, image="background.jpg")
+    menu = Menu(screen, width, height, image="resource/menu/background.jpg")
 
     while True:
         screen.fill(Color("white"))

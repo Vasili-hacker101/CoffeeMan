@@ -11,8 +11,10 @@ class Button(ABC):
         self.x, self.y = x, y
         self.size_x = size_x
         self.size_y = size_y
+        self.rect = (x, y, size_x, size_y)
+        print(self.rect)
         self.surface = surface
-        self.img = image if type(image) in [str, pygame.Surface] else None
+        self.img = check_img(image, (size_x, size_y))
         self.color = color
         self.text = text
 
@@ -35,7 +37,7 @@ class Button_menu(Button):
             draw.rect(self.surface, Color(self.color), (self.x, self.y, self.size_x, self.size_y))
 
         else:
-            check_img(self.img)
+            self.surface.blit(self.img, self.rect)
 
         font = pygame.font.Font(None, self.size_y)
         text = font.render(self.text, 1, Color("White"))

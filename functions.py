@@ -1,15 +1,27 @@
 import pygame
+from os import access, F_OK
 import json
 
 
-def check_img(img):
-    if type(img) is str:
-        image = pygame.image.load(f"resource/menu/{img}").convert()
+def check_img(img, size):
+    print(size)
+    if type(img) in [str, pygame.Surface]:
+        if type(img) is str:
+            if access(img, F_OK):
+                image = pygame.image.load(img).convert()
 
-    else:
-        image = img
+            else:
+                print("This file was not found")
+                return
 
-    return image
+        else:
+            image = img
+
+        image = pygame.transform.scale(image, size)
+
+        return image
+
+    return
 
 
 def get_data():
