@@ -1,7 +1,7 @@
 import pygame
 from Player import *
 from Blocks import *
-
+from Items import *
 WIN_WIDTH = 1280
 WIN_HEIGHT = 720
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
@@ -34,20 +34,26 @@ def camera_configure(camera, target_rect):
     return Rect(l, t, w, h)
 
 
-def main():
+#def main():
+if True:
     pygame.init()
     screen = pygame.display.set_mode(DISPLAY)
     pygame.display.set_caption("CoffeMan - T H E  G A M E")
     bg = Surface((WIN_WIDTH, WIN_HEIGHT))
-
     bg.fill(Color(BACKGROUND_COLOR))
+
+    info = pygame.Surface((1280, 30))
+    pygame.font.init()
+    info_font = pygame.font.Font(None, 40)
 
     hero = Player(55, 55)
     left = right = False
     up = False
 
+
     entities = pygame.sprite.Group()
     platforms = []
+    items = []
 
     entities.add(hero)
 
@@ -66,15 +72,15 @@ def main():
         "-                                                      -",
         "-                            ---                       -",
         "-                                                      -",
-        "-                                                      -",
+        "-       k                                              -",
         "-      ---                                             -",
-        "-                                                      -",
+        "-++                                                    -",
         "-------     ^^^>>  <<-                                 -",
         "-               -**-      --                           -",
         "-                     --  -                            -",
         "-     --                                               -",
-        "-                                                      -",
-        "-                                                      -",
+        "---                                                  ---",
+        "-+|                                                  |+-",
         "--------------------------------------------------------"]
 
     timer = pygame.time.Clock()
@@ -106,6 +112,21 @@ def main():
                 entities.add(trampoline)
                 platforms.append(trampoline)
 
+            elif col == "|":
+                door = Door(x, y)
+                entities.add(door)
+                platforms.append(door)
+
+            elif col == "+":
+                item = Item(x, y, "coin", "coin.png")
+                entities.add(item)
+                items.append(item)
+
+            elif col == "k":
+                item = Item(x, y, "keycard", "keycard.png")
+                entities.add(item)
+                items.append(item)
+
             x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
         y += PLATFORM_HEIGHT  # то же самое и с высотой
         x = 0  # на каждой новой строчке начинаем с нуля
@@ -115,11 +136,13 @@ def main():
 
     pygame.mixer.pre_init(44100, -16, 1, 512)
     pygame.mixer.init()
-    sound = pygame.mixer.Sound('main_music.ogg')
+    sound = pygame.mixer.Sound('Music/main_music.ogg')
     sound.play(-1)
 
     camera = Camera(camera_configure, total_level_width, total_level_height)
     running = True
+
+
     while running:
         timer.tick(60)
         if hero.dead:
@@ -145,16 +168,31 @@ def main():
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
 
+
         screen.blit(bg, (0, 0))
 
+        for i in items:
+            i.update(hero)
+
+
         camera.update(hero)
-        hero.update(left, right, up, platforms)
+        hero.update(left, right, up, platforms + items)
+        info.fill((0, 0, 0))
+        info.set_colorkey((0, 0, 0))
+        info_str = u"Счет: " + str(hero.num_of_coins)
+        if hero.num_of_keycards > 0:
+            info_str += ", Ключ!"
+        info.blit(info_font.render(info_str, 1, (255, 255, 255)), (10, 5))
+
+
 
         for e in entities:
             screen.blit(e.image, camera.apply(e))
 
+        screen.blit(info, (0, 0))
+
         pygame.display.update()
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()

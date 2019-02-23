@@ -32,18 +32,27 @@ class Right_Arrow(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         self.image.fill(Color("black"))
-        self.image = image.load("%s/right.png" % ICON_DIR)
+        self.image = image.load("%s/images/Blocks/right.png" % ICON_DIR)
 
 
 class Left_Arrow(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         self.image.fill(Color("black"))
-        self.image = image.load("%s/left.png" % ICON_DIR)
+        self.image = image.load("%s/images/Blocks/left.png" % ICON_DIR)
 
 
 class Trampoline(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         self.image.fill(Color("black"))
-        self.image = image.load("%s/up.png" % ICON_DIR)
+        self.image = image.load("%s/images/Blocks/up.png" % ICON_DIR)
+
+
+class Door(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image.fill(Color("black"))
+        self.image.set_colorkey((0, 0, 0))
+        self.image = image.load("%s/images/Blocks/door.png" % ICON_DIR)
+        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
