@@ -11,7 +11,7 @@ class Level:
         self.cell_size = cell_size
         x, y, size_x, size_y = start_and_size
         self.img = check_img(image, (size_x, size_y))
-        self.wall = []
+        self.objects = {"wall": []}
 
     def draw(self, wall=False, sheet=False):
         if self.img is None:
@@ -21,7 +21,7 @@ class Level:
             self.surface.blit(self.img, self.rect)
 
         if wall:
-            for w in self.wall:
+            for w in self.objects["wall"]:
                     draw.rect(self.surface, Color("red"), (self.cell_size * w[0], self.cell_size * w[1],
                                                            self.cell_size, self.cell_size))
         if sheet:
@@ -35,15 +35,17 @@ class Level:
     def set_image(self, img):
         self.img = img if type(img) in [str, pygame.Surface] else None
 
-    def set_cell(self, pos, code):
-        if pos in self.wall:  # Чиститься старое значение
-            del self.wall[self.wall.index(pos)]
+    def set_cell(self, pos, code=-1):
+        for k, o in self.objects.items():  # Чиститься старое значение
+            if pos in o:
+                del self.objects[k][o.index(pos)]
 
-        if code == 1:
-            self.wall.append(pos)
+        if code != -1:
+            k = list(self.objects)[code]
+            self.objects[k].append(pos)
 
     def is_clear(self, cord):
-        return cord not in self.wall
+        return not [1 for o in self.objects.values() if cord in o]
 
     def get_cell(self, mouse_pos):
         x, y = mouse_pos
@@ -71,7 +73,7 @@ if __name__ == '__main__':
                 if event.button == 1:
                     pos = level.get_cell(pygame.mouse.get_pos())
 
-                    code = 1 if level.is_clear(pos) else 0
+                    code = 0 if level.is_clear(pos) else -1
 
                     level.set_cell(pos, code)
 

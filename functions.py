@@ -4,24 +4,17 @@ import json
 
 
 def check_img(img, size):
-    print(size)
-    if type(img) in [str, pygame.Surface]:
-        if type(img) is str:
-            if access(img, F_OK):
-                image = pygame.image.load(img).convert()
-
-            else:
-                print("This file was not found")
-                return
+    if type(img) is str:
+        if access(img, F_OK):
+            img = pygame.image.load(img).convert()
 
         else:
-            image = img
+            print("This file was not found")
 
-        image = pygame.transform.scale(image, size)
+    if type(img) is not pygame.Surface:
+        img = pygame.image.load("resource/no_signal.png").convert()
 
-        return image
-
-    return
+    return pygame.transform.scale(img, size)
 
 
 def get_data():
